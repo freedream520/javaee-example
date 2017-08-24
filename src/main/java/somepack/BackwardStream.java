@@ -9,7 +9,6 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
-import java.io.IOException;
 
 @MessageDriven(
         name = "BackwardStreamMDB",
@@ -30,13 +29,7 @@ public class BackwardStream implements MessageListener {
             try {
                 String text = ((TextMessage) message).getText();
                 logger.info("MESSAGE BEAN: Message received: " + text);
-                broker.forEach(s -> {
-                    try {
-                        s.getBasicRemote().sendText(text);
-                    } catch (IOException e) {
-                        logger.error("error sending msg to socket", e);
-                    }
-                });
+                broker.forEach(text);
             } catch (JMSException e) {
                 e.printStackTrace();
             }
