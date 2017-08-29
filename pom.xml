@@ -92,7 +92,7 @@
                     <username>ws</username>
                     <password>12</password>
                     <server-groups>
-                        <group>main-server-group</group>
+                        <group>dtc-group</group>
                     </server-groups>
                 </configuration>
             </plugin>

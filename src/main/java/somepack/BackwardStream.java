@@ -2,20 +2,15 @@ package somepack;
 
 import org.slf4j.Logger;
 
-import javax.ejb.ActivationConfigProperty;
-import javax.ejb.MessageDriven;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+import javax.xml.bind.JAXB;
+import java.io.StringReader;
+import java.io.StringWriter;
 
-@MessageDriven(
-        name = "BackwardStreamMDB",
-        activationConfig = {
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = "java:/jms/queue/ExampleQueue"),
-        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")
-})
 public class BackwardStream implements MessageListener {
 
     @Inject
@@ -28,9 +23,14 @@ public class BackwardStream implements MessageListener {
         if (message instanceof TextMessage) {
             try {
                 String text = ((TextMessage) message).getText();
-                logger.info("MESSAGE BEAN: Message received: " + text);
-                broker.forEach(text);
-            } catch (JMSException e) {
+                somepack.Message msg = JAXB.unmarshal(new StringReader(text), somepack.Message.class);
+
+                StringWriter xml = new StringWriter();
+                JAXB.marshal(msg, xml);
+
+                logger.info("MESSAGE BEAN: Message received: " + xml.toString());
+                broker.forEach(xml.toString());
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -39,5 +39,8 @@ public class BackwardStream implements MessageListener {
         }
     }
 
-
+    @PostConstruct
+    void postConstruct() {
+        logger.info("im created");
+    }
 }

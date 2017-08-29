@@ -2,6 +2,7 @@ package somepack;
 
 import org.slf4j.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 import javax.websocket.Session;
@@ -33,5 +34,10 @@ public class MessagesBroker {
                 logger.error("cant't send message to session " + s.getId(), e);
             }
         });
+    }
+
+    @PostConstruct
+    void postConstruct() {
+        logger.info("websocket msg broker constructed");
     }
 }

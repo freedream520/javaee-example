@@ -15,21 +15,21 @@ import java.util.Map;
 
 @Singleton
 public class Sender {
-    @Resource(lookup = "java:/ConnectionFactory")
+    @Resource(lookup = "java:/activemq/ConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    @Resource(lookup = "java:/jms/queue/ExampleQueue")
+    @Resource(lookup = "java:/activemq/queue_in")
     private Queue queue;
 
     @Inject
     private Logger logger;
 
-    public Map<String, String> getStatus() {
-        LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+    public Map<String, Object> getStatus() {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
 
-        map.put("logger", String.valueOf(logger == null));
-        map.put("connectionFactory", String.valueOf(connectionFactory == null));
-        map.put("queue", String.valueOf(queue == null));
+        map.put("logger", logger);
+        map.put("connectionFactory", connectionFactory);
+        map.put("queue", queue);
 
         return map;
     }
@@ -37,7 +37,7 @@ public class Sender {
     public String sendMessage(String text) {
         Throwable toReturn = null;
         try {
-            logger.info("Try to send message <" + text + ">");
+            logger.info("Try to send message");
             Connection connection = connectionFactory.createConnection();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             MessageProducer messageProducer = session.createProducer(queue);
@@ -56,7 +56,7 @@ public class Sender {
         return sw.toString();
     }
 
-    @Schedule(second = "*/2", minute="*", hour="*", persistent = false)
+//    @Schedule(second = "*/3", minute="*", hour="*", persistent = false)
     void scheduled() {
         sendMessage("main time is " + String.valueOf(System.currentTimeMillis()));
     }
@@ -64,5 +64,10 @@ public class Sender {
     @PostConstruct
     public void postConstruct() {
         logger.info("sender constructed");
+        try {
+            logger.info("with queue name: " + queue.getQueueName());
+        } catch (JMSException e) {
+            logger.error("errr", e);
+        }
     }
 }
