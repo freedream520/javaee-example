@@ -3,16 +3,15 @@ package somepack;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.ejb.*;
 import javax.inject.Inject;
-import javax.jms.*;
+import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.TextMessage;
 import javax.xml.bind.JAXB;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class BackwardStream implements MessageListener {
 
     @Inject
