@@ -72,9 +72,6 @@
             showMessage(this.responseText);
         };
         var data = new FormData();
-
-
-
         data.append("q", text);
         xhr.send(data);
     }

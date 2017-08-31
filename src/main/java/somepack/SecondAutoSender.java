@@ -16,11 +16,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Singleton
-public class Sender {
-    @Resource(lookup = "java:jboss/jms/ivt/IVTCF")
+public class SecondAutoSender {
+    @Resource(lookup = "java:/activemq/ConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    @Resource(lookup = "java:jboss/jms/ivt/IVTQueue")
+    @Resource(lookup = "java:/activemq/queue_in")
     private Queue queue;
 
     @Inject

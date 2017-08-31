@@ -40,4 +40,8 @@ public class MessagesBroker {
     void postConstruct() {
         logger.info("websocket msg broker constructed");
     }
+
+    public boolean isEmpty() {
+        return sessions.isEmpty();
+    }
 }
